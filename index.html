@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Древнетюркские руны</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        #inputField {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        #outputField {
+            width: 100%;
+            padding: 10px;
+            font-size: 24px;
+            min-height: 100px;
+            direction: rtl;
+            background: white;
+            border: 1px solid #ccc;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Конвертер в древнетюркские руны</h1>
+    
+    <div style="margin-bottom: 15px;">
+        <label>
+            <input type="radio" name="mode" value="simple" checked onchange="RunesConverter.switchMode()"> 
+            Простой режим
+        </label>
+        <label style="margin-left: 20px;">
+            <input type="radio" name="mode" value="smart" onchange="RunesConverter.switchMode()"> 
+            Исторический режим
+        </label>
+    </div>
+    
+    <h3>Введите текст (русскими буквами):</h3>
+    <input type="text" id="inputField" placeholder="Напишите что-нибудь...">
+    
+    <h3>Рунический текст:</h3>
+    <div id="outputField"></div>
+
+    <div class="buttons">
+        <button onclick="RunesConverter.addSpace()">Пробел</button>
+        <button onclick="RunesConverter.backspace()">Назад</button>
+        <button onclick="RunesConverter.clearAll()">Очистить</button>
+        <button onclick="RunesConverter.copyToClipboard()">Копировать</button>
+    </div>
+
+    <script>
+        const RunesConverter = (() => {
+            const MAPPING = {
+                'а': '\u{10C00}',
+                'е': '\u{10C01}',
+                'и': '\u{10C02}',
+                'ы': '\u{10C03}',
+                'о': '\u{10C04}',
+                'ө': '\u{10C05}',
+                'у': '\u{10C06}',
+                'ү': '\u{10C07}',
+                'э': '\u{10C1D}', 
+                'ю': '\u{10C1E}', 
+                'я': '\u{10C1F}',
+                'б': '\u{10C0A}',
+                'в': '\u{10C0B}',
+                'г': '\u{10C0C}',
+                'д': '\u{10C0D}',
+                'ж': '\u{10C0E}',
+                'з': '\u{10C0F}',
+                'й': '\u{10C10}',
+                'к': '\u{10C11}',
+                'л': '\u{10C12}',
+                'м': '\u{10C13}',
+                'н': '\u{10C14}',
+                'ң': '\u{10C15}',
+                'п': '\u{10C16}',
+                'р': '\u{10C17}',
+                'с': '\u{10C18}',
+                'т': '\u{10C19}',
+                'ф': '\u{10C1A}',
+                'х': '\u{10C1B}',
+                'ц': '\u{10C1C}',
+                'ч': '\u{10C1D}',
+                'ш': '\u{10C1E}',
+                'щ': '\u{10C1F}',
+            };
+
+            const SMART_SYLLABLES = {};
+
+            let currentMode = 'simple';
+            let inputElement = null;
+            let outputElement = null;
+
+            function convertSimple(text) {
+                if (!text) return '';
+                return text
+                    .toLowerCase()
+                    .split('')
+                    .map(char => MAPPING[char] || char)
+                    .join('');
+            }
+
+            function convertSmart(text) {
+                return convertSimple(text);
+            }
+
+            function convert(text) {
+                return currentMode === 'smart' ? convertSmart(text) : convertSimple(text);
+            }
+
+            function switchMode() {
+                const radios = document.getElementsByName('mode');
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        currentMode = radio.value;
+                        break;
+                    }
+                }
+                console.log(`Режим переключён: ${currentMode}`);
+                handleInput();
+            }
+
+            function handleInput() {
+                if (!inputElement || !outputElement) return;
+                const text = inputElement.value;
+                const runes = convert(text);
+                outputElement.textContent = runes;
+            }
+
+            function addSpace() {
+                if (!inputElement) return;
+                inputElement.value += ' ';
+                handleInput();
+                inputElement.focus();
+            }
+
+            function backspace() {
+                if (!inputElement) return;
+                inputElement.value = inputElement.value.slice(0, -1);
+                handleInput();
+                inputElement.focus();
+            }
+
+            function clearAll() {
+                if (!inputElement || !outputElement) return;
+                inputElement.value = '';
+                outputElement.textContent = '';
+                inputElement.focus();
+            }
+
+            async function copyToClipboard() {
+                if (!outputElement) return;
+                try {
+                    await navigator.clipboard.writeText(outputElement.textContent);
+                    alert('Скопировано!');
+                } catch (err) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = outputElement.textContent;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('Скопировано!');
+                }
+            }
+
+            function validate() {
+    const tests = [
+        { input: 'аба', expected: '\u{10C00}\u{10C0A}\u{10C00}' },
+        { input: 'тюрк', expected: '\u{10C19}\u{10C1E}\u{10C17}\u{10C11}' },
+        { input: 'каган', expected: '\u{10C11}\u{10C00}\u{10C0C}\u{10C00}\u{10C14}' },
+        { input: 'билге', expected: '\u{10C0A}\u{10C02}\u{10C12}\u{10C0C}\u{10C01}' },
+        { input: 'Hello!', expected: 'hello!' },
+        { input: '', expected: '' }
+    ];
+
+    console.group('Автопроверки mapping + convert');
+    let passed = 0;
+    tests.forEach((t, i) => {
+        const result = convert(t.input);
+        const ok = result === t.expected;
+        if (ok) {
+            passed++;
+            console.log(`Тест ${i+1}: "${t.input}" → OK`);
+        } else {
+            console.error(`Тест ${i+1} FAILED: "${t.input}"`);
+            console.error(`   Ожидается: ${t.expected}`);
+            console.error(`   Получено: ${result}`);
+            
+            console.log('   Ожидается (посимвольно):');
+            for (let char of t.expected) {
+                console.log(`     ${char} (U+${char.codePointAt(0).toString(16).toUpperCase()})`);
+            }
+            console.log('   Получено (посимвольно):');
+            for (let char of result) {
+                console.log(`     ${char} (U+${char.codePointAt(0).toString(16).toUpperCase()})`);
+            }
+        }
+    });
+    console.log(`\nПройдено: ${passed}/${tests.length}`);
+    console.groupEnd();
+    
+    return passed === tests.length;
+}
+
+            function init() {
+                inputElement = document.getElementById('inputField');
+                outputElement = document.getElementById('outputField');
+
+                if (!inputElement || !outputElement) {
+                    console.error('Не найдены элементы #inputField или #outputField');
+                    return;
+                }
+
+                inputElement.addEventListener('input', handleInput);
+
+                console.log('КОНВЕРТЕР ДРЕВНЕТЮРКСКИХ РУН');
+                validate();
+            }
+
+            return {
+                MAPPING,
+                convert,
+                switchMode,
+                addSpace,
+                backspace,
+                clearAll,
+                copyToClipboard,
+                validate,
+                init
+            };
+        })();
+
+        document.addEventListener('DOMContentLoaded', RunesConverter.init);
+    </script>
+</body>
+</html>
