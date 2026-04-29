@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Древнетюркские руны</title>
+    <title>Древнетюркские руны - Двунаправленный конвертер</title>
     <style>
         :root {
             --bg-body: linear-gradient(to right, #000000, #000066);
@@ -72,15 +71,8 @@
             text-align: center;
         }
 
-        h1 {
-            font-size: 32px;
-            color: var(--text-color);
-        }
-
-        h3 {
-            font-size: 18px;
-            color: var(--text-color);
-        }
+        h1 { font-size: 32px; color: var(--text-color); }
+        h3 { font-size: 18px; color: var(--text-color); }
 
         #inputField {
             width: 100%;
@@ -94,9 +86,7 @@
             color: var(--input-text);
         }
 
-        #inputField::placeholder {
-            color: var(--placeholder-color);
-        }
+        #inputField::placeholder { color: var(--placeholder-color); }
 
         #outputField {
             width: 100%;
@@ -142,18 +132,10 @@
             transition: background 0.2s;
         }
 
-        .row button:hover {
-            background: var(--key-hover);
-        }
+        .row button:hover { background: var(--key-hover); }
+        .row button:active { transform: scale(0.95); }
 
-        .row button:active {
-            transform: scale(0.95);
-        }
-
-        .buttons {
-            margin-top: 20px;
-            text-align: center;
-        }
+        .buttons { margin-top: 20px; text-align: center; }
 
         .buttons button {
             border-radius: 8px;
@@ -173,16 +155,14 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .buttons button:active {
-            transform: scale(0.98);
-        }
+        .buttons button:active { transform: scale(0.98); }
 
-        .theme-switcher {
+        .theme-switcher, .direction-switcher, .mode-switcher {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .theme-switcher label {
+        .theme-switcher label, .direction-switcher label, .mode-switcher label {
             margin: 0 10px;
             cursor: pointer;
             font-family: var(--heading-font);
@@ -195,6 +175,10 @@
             font-size: 14px;
             color: var(--footer-color);
             opacity: 0.8;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -213,7 +197,18 @@
 
 <h1>Конвертер в древнетюркские руны</h1>
 
-<div style="margin-bottom: 15px; text-align: center;">
+<div class="direction-switcher">
+    <label>
+        <input type="radio" name="direction" value="toRunes" checked onchange="changeDirection('toRunes')">
+        Русский ➔ Руны
+    </label>
+    <label>
+        <input type="radio" name="direction" value="toCyrillic" onchange="changeDirection('toCyrillic')">
+        Руны ➔ Русский
+    </label>
+</div>
+
+<div class="mode-switcher">
     <label style="font-family: 'Brush Script MT', cursive; font-size: 18px;">
         <input type="radio" name="mode" value="simple" checked onchange="RunesConverter.switchMode()">
         Простой режим
@@ -224,10 +219,10 @@
     </label>
 </div>
 
-<h3>Введите текст (русскими буквами):</h3>
+<h3 id="inputLabel">Введите текст (русскими буквами):</h3>
 <input type="text" id="inputField" placeholder="Напишите что-нибудь...">
 
-<div class="container">
+<div id="keyboardCyrillic" class="container">
     <div class="row one">
         <button>Й</button>
         <button>Ц</button>
@@ -268,7 +263,48 @@
     </div>
 </div>
 
-<h3>Рунический текст:</h3>
+<div id="keyboardRunes" class="container hidden">
+    <div class="row one">
+        <button data-rune="&#x10C10;">𐰑</button>
+        <button data-rune="&#x10C1C;">𐰜</button>
+        <button data-rune="&#x10C06;">𐰆</button>
+        <button data-rune="&#x10C11;">𐰑</button>
+        <button data-rune="&#x10C01;">𐰁</button>
+        <button data-rune="&#x10C14;">𐰔</button>
+        <button data-rune="&#x10C0C;">𐰌</button>
+        <button data-rune="&#x10C1E;">𐰞</button>
+        <button data-rune="&#x10C1F;">𐰟</button>
+        <button data-rune="&#x10C0F;"></button>
+        <button data-rune="&#x10C1B;"></button>
+        <button data-rune="&#x10C00;"></button>
+    </div>
+    <div class="row two">
+        <button data-rune="&#x10C1A;">𐰚</button>
+        <button data-rune="&#x10C03;">𐰃</button>
+        <button data-rune="&#x10C0B;">𐰋</button>
+        <button data-rune="&#x10C00;">𐰀</button>
+        <button data-rune="&#x10C16;">𐰖</button>
+        <button data-rune="&#x10C17;">𐰗</button>
+        <button data-rune="&#x10C04;">𐰄</button>
+        <button data-rune="&#x10C12;">𐰒</button>
+        <button data-rune="&#x10C0D;"></button>
+        <button data-rune="&#x10C0E;">𐰎</button>
+        <button data-rune="&#x10C1D;">𐰝</button>
+    </div>
+    <div class="row three">
+        <button data-rune="&#x10C1F;">𐰟</button>
+        <button data-rune="&#x10C1D;">𐰝</button>
+        <button data-rune="&#x10C18;">𐰘</button>
+        <button data-rune="&#x10C13;">𐰓</button>
+        <button data-rune="&#x10C02;">𐰂</button>
+        <button data-rune="&#x10C19;">𐰙</button>
+        <button data-rune="&#x10C00;"></button>
+        <button data-rune="&#x10C0A;">𐰊</button>
+        <button data-rune="&#x10C1E;">𐰞</button>
+    </div>
+</div>
+
+<h3 id="outputLabel">Рунический текст:</h3>
 <div id="outputField"></div>
 
 <div class="buttons">
@@ -290,25 +326,68 @@
             document.body.classList.remove('light-theme');
         }
         localStorage.setItem('theme', themeName);
-
         const radio = document.querySelector(`input[name="theme"][value="${themeName}"]`);
         if (radio) radio.checked = true;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme') || 'dark'; // По умолчанию тёмная
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         setTheme(savedTheme);
     });
 </script>
 
 <script>
-    const keyboardButtons = document.querySelectorAll('.row button');
+    let currentDirection = 'toRunes';
+
+    function changeDirection(direction) {
+        currentDirection = direction;
+
+        const keyboardCyrillic = document.getElementById('keyboardCyrillic');
+        const keyboardRunes = document.getElementById('keyboardRunes');
+        const inputLabel = document.getElementById('inputLabel');
+        const outputLabel = document.getElementById('outputLabel');
+        const inputField = document.getElementById('inputField');
+
+        if (direction === 'toRunes') {
+            keyboardCyrillic.classList.remove('hidden');
+            keyboardRunes.classList.add('hidden');
+            inputLabel.textContent = "Введите текст (русскими буквами):";
+            outputLabel.textContent = "Рунический текст:";
+            inputField.placeholder = "Напишите что-нибудь на русском...";
+        } else {
+            keyboardCyrillic.classList.add('hidden');
+            keyboardRunes.classList.remove('hidden');
+            inputLabel.textContent = "Введите текст (рунами):";
+            outputLabel.textContent = "Перевод на русский:";
+            inputField.placeholder = "Нажмите на руны...";
+        }
+
+        RunesConverter.clearAll();
+    }
+</script>
+
+<script>
     const inputField = document.getElementById('inputField');
 
-    keyboardButtons.forEach(button => {
+    const cyrillicButtons = document.querySelectorAll('#keyboardCyrillic .row button');
+    cyrillicButtons.forEach(button => {
         button.addEventListener('click', function() {
+            if (currentDirection !== 'toRunes') return;
             const letter = this.textContent;
             inputField.value += letter;
+            RunesConverter.handleInput();
+            inputField.focus();
+        });
+    });
+
+    const runeButtons = document.querySelectorAll('#keyboardRunes .row button');
+    runeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (currentDirection !== 'toCyrillic') return;
+
+            const rune = this.getAttribute('data-rune') || this.textContent;
+
+            inputField.value += rune;
             RunesConverter.handleInput();
             inputField.focus();
         });
@@ -321,7 +400,7 @@
 
 <script>
     const RunesConverter = (() => {
-        const MAPPING = {
+        const CYR_TO_RUNE = {
             'а': '\u{10C00}', 'е': '\u{10C01}', 'и': '\u{10C02}', 'ы': '\u{10C03}',
             'о': '\u{10C04}', 'ө': '\u{10C05}', 'у': '\u{10C06}', 'ү': '\u{10C07}',
             'э': '\u{10C1D}', 'ю': '\u{10C1E}', 'я': '\u{10C1F}',
@@ -331,37 +410,55 @@
             'п': '\u{10C16}', 'р': '\u{10C17}', 'с': '\u{10C18}', 'т': '\u{10C19}',
             'ф': '\u{10C1A}', 'х': '\u{10C1B}', 'ц': '\u{10C1C}', 'ч': '\u{10C1D}',
             'ш': '\u{10C1E}', 'щ': '\u{10C1F}',
+            ' ': ' '
         };
+
+        const RUNE_TO_CYR = {};
+        for (let char in CYR_TO_RUNE) {
+            let rune = CYR_TO_RUNE[char];
+            if (rune !== ' ') {
+                RUNE_TO_CYR[rune] = char;
+            }
+        }
+        RUNE_TO_CYR[' '] = ' ';
 
         let currentMode = 'simple';
         let inputElement = null;
         let outputElement = null;
 
-        function convertSimple(text) {
+        function convertToRunes(text) {
             if (!text) return '';
-            return text.toLowerCase().split('').map(char => MAPPING[char] || char).join('');
+            return text.toLowerCase().split('').map(char => CYR_TO_RUNE[char] || char).join('');
         }
 
-        function convert(text) {
-            return currentMode === 'smart' ? convertSimple(text) : convertSimple(text);
-        }
-
-        function switchMode() {
-            const radios = document.getElementsByName('mode');
-            for (let radio of radios) {
-                if (radio.checked) {
-                    currentMode = radio.value;
-                    break;
-                }
-            }
-            handleInput();
+        function convertToCyrillic(text) {
+            if (!text) return '';
+            return Array.from(text).map(char => RUNE_TO_CYR[char] || char).join('');
         }
 
         function handleInput() {
             if (!inputElement || !outputElement) return;
+
             const text = inputElement.value;
-            const runes = convert(text);
-            outputElement.textContent = runes;
+            let result = '';
+
+            if (currentDirection === 'toRunes') {
+                result = convertToRunes(text);
+                outputElement.style.direction = 'rtl';
+                outputElement.style.textAlign = 'right';
+            } else {
+                result = convertToCyrillic(text);
+                outputElement.style.direction = 'ltr';
+                outputElement.style.textAlign = 'left';
+            }
+
+            outputElement.textContent = result;
+        }
+
+        function switchMode() {
+            const checked = document.querySelector('input[name="mode"]:checked');
+            if (checked) currentMode = checked.value;
+            handleInput();
         }
 
         function addSpace() {
@@ -390,15 +487,23 @@
             try {
                 await navigator.clipboard.writeText(outputElement.textContent);
                 alert('Скопировано!');
-            } catch (err) {
-                alert('Ошибка копирования');
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = outputElement.textContent;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                alert('Скопировано!');
             }
         }
 
         function init() {
             inputElement = document.getElementById('inputField');
             outputElement = document.getElementById('outputField');
-            inputElement.addEventListener('input', handleInput);
+            if (!inputElement || !outputElement) return;
+
+            handleInput();
         }
 
         return {
